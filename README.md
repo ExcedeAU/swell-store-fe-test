@@ -1,9 +1,8 @@
 # Origin - headless storefront theme for [Swell](https://www.swell.is/)
 
-Origin is a reference example and starter project for building custom Nuxt v2 storefronts powered by Swell.js. 
+Origin is a reference example and starter project for building custom Nuxt v2 storefronts powered by Swell.js.
 
-> [!IMPORTANT] 
-> **The app is provided in an 'as-is' state and will not be receiving updates or bug fixes from March 1, 2024.** [Swell.js](https://developers.swell.is/frontend-api/setup) itself is in active development and is recommended SDK for building full-stack JS storefronts on Swell.
+> [!IMPORTANT] > **The app is provided in an 'as-is' state and will not be receiving updates or bug fixes from March 1, 2024.** [Swell.js](https://developers.swell.is/frontend-api/setup) itself is in active development and is recommended SDK for building full-stack JS storefronts on Swell.
 
 #### Features
 

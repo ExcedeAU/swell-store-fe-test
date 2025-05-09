@@ -714,10 +714,10 @@ export default {
 .gradient {
   background: rgb(255 255 255);
   background: linear-gradient(
-    0deg,
-    theme('colors.primary.lighter') 0%,
-    theme('colors.primary.lighter') 25%,
-    rgba(255 255 255 / 0%) 100%
+    180deg,
+    rgba(255 255 255 / 0%) 0%,
+    theme('colors.primary.lighter') 75%,
+    theme('colors.primary.lighter') 100%
   );
   @apply absolute top-0 h-6 w-full -translate-y-full transform;
 }
