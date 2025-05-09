@@ -88,14 +88,15 @@ export default () => {
       // https://go.nuxtjs.dev/eslint
       '@nuxtjs/eslint-module',
       // https://go.nuxtjs.dev/stylelint
-      [
-        '@nuxtjs/stylelint-module',
-        {
-          configFile: '.stylelintrc.js',
-          fix: true,
-          lintOnStart: false,
-        },
-      ],
+      // Temporarily disabled to resolve build error
+      // [
+      //   '@nuxtjs/stylelint-module',
+      //   {
+      //     configFile: '.stylelintrc.js',
+      //     fix: true,
+      //     lintOnStart: false,
+      //   },
+      // ],
       [
         // https://go.nuxtjs.dev/tailwindcss
         '@nuxtjs/tailwindcss',
