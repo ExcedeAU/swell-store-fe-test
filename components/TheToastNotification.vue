@@ -9,118 +9,144 @@
         />
 
         <div
-          class="w-full-px-6 top-0 right-0 mx-auto mt-3 rounded-md bg-primary-lightest shadow-md md:mr-3 md:max-w-max"
-          :class="{
-            'md:min-w-96': product,
-            'bg-error-faded text-error-default': type === 'error',
-            'text-lightest bg-ok-faded': type === 'success',
-          }"
+          class="top-0 right-0 mx-auto mt-3 w-full px-6 md:mr-3 md:max-w-max"
         >
           <div
-            class="flex items-center rounded-t-md border-primary-light p-3"
-            :class="{ 'mb-3 border-b': product }"
+            class="w-full overflow-hidden rounded-lg shadow-lg"
+            :class="{
+              'md:min-w-96': product,
+              'bg-error-faded text-error-default': type === 'error',
+              'bg-ok-faded text-primary-darkest': type === 'success',
+              'bg-primary-lightest': type !== 'error' && type !== 'success',
+            }"
+            style="background-color: white"
           >
-            <BaseIcon v-if="type !== 'error'" class="mr-1" icon="uil:check" />
-            <BaseIcon v-if="type === 'error'" class="mr-1" icon="uil:times" />
-            <span class="pr-3">{{ message }}</span>
-            <button
-              v-if="product"
-              type="button"
-              class="ml-auto h-8 w-8 rounded-full bg-primary-light p-1"
-              @click="
-                $store.commit('setState', { key: 'notification', value: null })
-              "
+            <div
+              class="flex items-center justify-between p-4"
+              :class="{ 'mb-3 border-b border-primary-light': product }"
             >
-              <BaseIcon icon="uil:times" />
-            </button>
-          </div>
-
-          <!-- Added product -->
-          <template v-if="product">
-            <div class="flex px-3">
-              <div class="mr-3 w-24">
-                <VisualMedia
-                  v-if="product.images && product.images.length"
-                  :source="product.images[0]"
-                  :widths="[96, 192]"
-                  sizes="96px"
-                  ratio="1:1"
-                  class="overflow-hidden rounded"
-                />
-
-                <!-- Fallback image -->
-                <div v-else class="relative rounded bg-primary-lighter pb-full">
-                  <BaseIcon
-                    icon="uil:camera-slash"
-                    size="lg"
-                    class="center-xy absolute text-primary-med"
-                  />
-                </div>
-              </div>
-
-              <!-- Name + options -->
-              <div class="pt-1">
-                <NuxtLink
-                  :to="
-                    localePath(
-                      resolveUrl({ type: 'product', value: product.slug }),
-                    )
-                  "
-                  class="inline-block"
+              <div class="flex items-center">
+                <div
+                  v-if="type !== 'error'"
+                  class="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-ok-default text-primary-lightest"
                 >
-                  <h4>{{ product.name }}</h4>
-                </NuxtLink>
-                <div class="mt-1 text-sm">
-                  <p v-if="options">
-                    {{ options }}
-                  </p>
-                  <p v-if="trialDays">
-                    {{ $tc('cart.item.trialDays', trialDays) }}
-                  </p>
+                  <BaseIcon icon="uil:check" size="sm" />
+                </div>
+                <div
+                  v-if="type === 'error'"
+                  class="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-error-default text-primary-lightest"
+                >
+                  <BaseIcon icon="uil:times" size="sm" />
+                </div>
+                <span class="font-medium">{{ message }}</span>
+              </div>
+              <button
+                v-if="product"
+                type="button"
+                class="ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary-light p-1 transition-colors hover:bg-primary-med"
+                @click="
+                  $store.commit('setState', {
+                    key: 'notification',
+                    value: null,
+                  })
+                "
+              >
+                <BaseIcon icon="uil:times" />
+              </button>
+            </div>
+
+            <!-- Added product -->
+            <template v-if="product">
+              <div class="flex px-4 pb-3">
+                <div class="mr-4 w-24">
+                  <VisualMedia
+                    v-if="product.images && product.images.length"
+                    :source="product.images[0]"
+                    :widths="[96, 192]"
+                    sizes="96px"
+                    ratio="1:1"
+                    class="overflow-hidden rounded-md shadow-sm"
+                  />
+
+                  <!-- Fallback image -->
+                  <div
+                    v-else
+                    class="relative rounded-md bg-primary-lighter pb-full shadow-sm"
+                  >
+                    <BaseIcon
+                      icon="uil:camera-slash"
+                      size="lg"
+                      class="center-xy absolute text-primary-med"
+                    />
+                  </div>
                 </div>
 
-                <!-- Price/quantity + item editor toggle -->
-                <div class="label-sm-bold leading-none">
-                  <div class="-mb-1 inline-block py-1">
-                    <span>{{ formattedPrice }}</span>
-                    <span v-if="product.quantity > 1"
-                      >{{ product.quantity }} &times;
-                    </span>
+                <!-- Name + options -->
+                <div class="pt-1">
+                  <NuxtLink
+                    :to="
+                      localePath(
+                        resolveUrl({ type: 'product', value: product.slug }),
+                      )
+                    "
+                    class="inline-block transition-colors hover:text-accent-default"
+                  >
+                    <h4 class="font-medium">{{ product.name }}</h4>
+                  </NuxtLink>
+                  <div class="mt-1 text-sm text-primary-dark">
+                    <p v-if="options">
+                      {{ options }}
+                    </p>
+                    <p v-if="trialDays">
+                      {{ $tc('cart.item.trialDays', trialDays) }}
+                    </p>
+                  </div>
+
+                  <!-- Price/quantity + item editor toggle -->
+                  <div class="mt-2 font-medium text-primary-darkest">
+                    <div class="inline-block">
+                      <span>{{ formattedPrice }}</span>
+                      <span v-if="product.quantity > 1" class="ml-1"
+                        >({{ product.quantity }} &times;)
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="no-wrap flex p-3">
-              <BaseButton
-                class="mr-2 w-1/2"
-                fit="full"
-                :link="cart.checkoutUrl"
-                appearance="dark"
-                target="_self"
-                :label="$t('notifications.checkout')"
-              />
-
-              <div class="relative w-1/2">
+              <div
+                class="flex flex-col items-center justify-center gap-3 border-t border-primary-lighter p-4 pt-2"
+              >
                 <BaseButton
-                  class="w-full"
+                  class="w-1/2"
                   fit="full"
-                  appearance="lught"
-                  :label="$t('notifications.cart')"
-                  @click.native="openCart"
+                  :link="cart.checkoutUrl"
+                  appearance="dark"
+                  target="_self"
+                  :label="$t('notifications.checkout')"
                 />
 
-                <div
-                  v-if="cart && cart.itemQuantity"
-                  class="fade-in absolute top-0 right-0 flex h-6 w-6 translate-x-1 -translate-y-1 transform items-center justify-center rounded-full bg-accent-default text-primary-lighter"
-                >
-                  <span class="mt-px block text-2xs leading-none">{{
-                    cart.itemQuantity
-                  }}</span>
+                <div class="relative w-1/2">
+                  <BaseButton
+                    class="w-full"
+                    fit="full"
+                    appearance="light"
+                    :label="$t('notifications.cart')"
+                    @click.native="openCart"
+                  />
+
+                  <div
+                    v-if="cart && cart.itemQuantity"
+                    class="fade-in absolute top-0 right-0 flex h-6 w-6 translate-x-1 -translate-y-1 transform items-center justify-center rounded-full bg-accent-default text-primary-lighter shadow-sm"
+                  >
+                    <span class="mt-px block text-2xs font-bold leading-none">{{
+                      cart.itemQuantity
+                    }}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </template>
+            </template>
+          </div>
         </div>
       </div>
     </div>

@@ -8,44 +8,57 @@
       />
 
       <!-- Panel -->
-      <div class="panel absolute right-0 h-full w-full max-w-112">
-        <div class="h-full w-full overflow-y-scroll bg-primary-lightest">
+      <div
+        class="panel absolute right-0 h-full w-full max-w-112 shadow-md"
+        style="background-color: #ffffff"
+      >
+        <div
+          class="h-full w-full overflow-y-scroll"
+          style="background-color: #ffffff"
+        >
           <!-- Header -->
-          <div class="container relative border-b border-primary-med py-5">
+          <div class="container relative border-b border-primary-med py-6">
             <div class="flex items-center justify-between">
-              <h3>
+              <h3 class="text-xl font-bold">
                 {{ $t('cart.title') }}
-                <span v-if="cart && cart.itemQuantity"
+                <span
+                  v-if="cart && cart.itemQuantity"
+                  class="ml-1 text-lg font-medium"
                   >({{ cart.itemQuantity }})</span
                 >
               </h3>
-              <button @click.prevent="closeCart">
+              <button
+                @click.prevent="closeCart"
+                class="rounded-full p-1 hover:bg-primary-lighter"
+              >
                 <BaseIcon icon="uil:multiply" size="lg" />
               </button>
             </div>
 
             <div
               v-if="$te('cart.infoText')"
-              class="mt-4 text-sm"
+              class="mt-4 text-sm text-primary-dark"
               v-html="$t('cart.infoText')"
             />
           </div>
 
           <!-- Items -->
-          <div v-if="cart && cart.items && cart.items.length">
+          <div v-if="cart && cart.items && cart.items.length" class="py-2">
             <CartItem
               v-for="(item, index) in cart.items"
               :key="`cartItem_${item.id}`"
               :item="item"
               :index="index"
+              class="border-b border-primary-lighter last:border-b-0"
             />
           </div>
-          <div v-else class="container py-10">
-            <span class="mb-4 block">{{ $t('cart.empty') }}</span>
+          <div v-else class="container py-16 text-center">
+            <span class="mb-6 block text-lg">{{ $t('cart.empty') }}</span>
             <BaseButton
               :link="shopLink"
               :label="$t('cart.backToProducts')"
               fit="static"
+              class="mx-auto"
             />
           </div>
 
@@ -54,14 +67,15 @@
             v-if="cart && cart.items && cart.items.length"
             class="border-t border-primary-med bg-primary-lighter"
           >
-            <div class="container border-b border-primary-med py-6">
+            <div class="container border-b border-primary-med py-8">
+              <h4 class="mb-4 font-medium">{{ $t('cart.applyCoupon') }}</h4>
               <div class="flex">
-                <div class="relative mr-2">
+                <div class="relative mr-2 flex-grow">
                   <input
                     v-model.trim="couponCode"
                     type="text"
                     placeholder="Add coupon or gift card code"
-                    class="input-coupon focus:outline-none h-full w-full rounded border border-primary-med bg-primary-lightest px-4 py-2 text-sm font-medium focus:shadow-outline"
+                    class="input-coupon focus:outline-none h-full w-full rounded border border-primary-med bg-primary-lightest px-4 py-3 text-sm font-medium focus:shadow-outline"
                   />
                   <transition name="fade">
                     <div
@@ -83,11 +97,14 @@
               </div>
 
               <!-- Applied discounts -->
-              <div v-if="cart">
-                <div v-if="cart.couponCode" class="mt-4 flex items-center">
-                  <p class="label-xs-bold">{{ cart.couponCode }}</p>
+              <div v-if="cart" class="mt-6">
+                <div
+                  v-if="cart.couponCode"
+                  class="mt-4 flex items-center rounded bg-primary-lightest p-3"
+                >
+                  <p class="label-xs-bold flex-grow">{{ cart.couponCode }}</p>
                   <button
-                    class="relative ml-3 h-7 w-7 rounded-full bg-primary-light"
+                    class="relative ml-3 h-7 w-7 rounded-full bg-primary-light hover:bg-primary-med"
                     @click="removeDiscount()"
                   >
                     <BaseIcon
@@ -100,12 +117,14 @@
                 <div
                   v-for="giftcard in cart.giftcards"
                   :key="giftcard.id"
-                  class="mt-4"
+                  class="mt-4 rounded bg-primary-lightest p-3"
                 >
                   <p class="label-xs-bold flex items-center">
-                    <span>**** **** **** {{ giftcard.last4 }}</span>
+                    <span class="flex-grow"
+                      >**** **** **** {{ giftcard.last4 }}</span
+                    >
                     <button
-                      class="relative ml-3 h-7 w-7 rounded-full bg-primary-light"
+                      class="relative ml-3 h-7 w-7 rounded-full bg-primary-light hover:bg-primary-med"
                       @click="removeDiscount(giftcard.id, currency)"
                     >
                       <BaseIcon
@@ -115,7 +134,7 @@
                       />
                     </button>
                   </p>
-                  <p class="text-sm">
+                  <p class="mt-1 text-sm text-primary-dark">
                     {{
                       $t('cart.giftCard', {
                         amount: formatMoney(giftcard.amount, currency),
@@ -127,47 +146,75 @@
             </div>
 
             <!-- Summary -->
-            <div class="container border-b border-primary-med py-6">
-              <div class="mb-1 flex justify-between">
-                <span>{{ $t('cart.subtotal') }}</span>
-                <span>{{ formatMoney(cart.subTotal, currency) }}</span>
+            <div class="container py-8">
+              <h4 class="mb-5 font-medium">{{ $t('cart.summary') }}</h4>
+              <div class="mb-2 flex justify-between text-sm">
+                <span class="text-primary-dark">{{ $t('cart.subtotal') }}</span>
+                <span class="font-medium">{{
+                  formatMoney(cart.subTotal, currency)
+                }}</span>
               </div>
-              <div class="mb-1 flex justify-between">
-                <span>{{ $t('cart.shipping') }}</span>
-                <span>{{ formatMoney(cart.shipmentTotal, currency) }}</span>
+              <div class="mb-2 flex justify-between text-sm">
+                <span class="text-primary-dark">{{ $t('cart.shipping') }}</span>
+                <span class="font-medium">{{
+                  formatMoney(cart.shipmentTotal, currency)
+                }}</span>
               </div>
               <div
                 v-show="cart.discountTotal"
-                class="mb-1 flex justify-between"
+                class="mb-2 flex justify-between text-sm"
               >
-                <span>{{ $t('cart.discounts') }}</span>
-                <span>–{{ formatMoney(cart.discountTotal, currency) }}</span>
+                <span class="text-primary-dark">{{
+                  $t('cart.discounts')
+                }}</span>
+                <span class="font-medium text-error-default"
+                  >–{{ formatMoney(cart.discountTotal, currency) }}</span
+                >
               </div>
               <div
                 v-show="cart.giftcardTotal"
-                class="mb-1 flex justify-between"
+                class="mb-2 flex justify-between text-sm"
               >
-                <span>{{ $t('cart.giftcards') }}</span>
-                <span>–{{ formatMoney(cart.giftcardTotal, currency) }}</span>
+                <span class="text-primary-dark">{{
+                  $t('cart.giftcards')
+                }}</span>
+                <span class="font-medium text-error-default"
+                  >–{{ formatMoney(cart.giftcardTotal, currency) }}</span
+                >
               </div>
-              <div v-show="cart.taxTotal" class="mb-1 flex justify-between">
-                <span>{{ $t('cart.taxes') }}</span>
-                <span>{{ formatMoney(cart.taxTotal, currency) }}</span>
+              <div
+                v-show="cart.taxTotal"
+                class="mb-2 flex justify-between text-sm"
+              >
+                <span class="text-primary-dark">{{ $t('cart.taxes') }}</span>
+                <span class="font-medium">{{
+                  formatMoney(cart.taxTotal, currency)
+                }}</span>
               </div>
-              <h3 class="mt-3 flex justify-between text-xl font-semibold">
+
+              <div class="my-4 border-t border-primary-med"></div>
+
+              <h3 class="mb-6 flex justify-between text-xl font-bold">
                 <span>{{ $t('cart.total') }}</span>
                 <span>{{ formatMoneyRounded(cart.grandTotal, currency) }}</span>
               </h3>
+
               <div
                 v-if="account && account.balance && account.balance > 0"
-                class="mt-4 mb-1 flex justify-between border-t border-primary-med pt-4"
+                class="mb-6 rounded bg-primary-lightest p-4"
               >
-                <span>{{ $t('cart.accountBalance') }}</span>
-                <span>{{ formatMoney(account.balance, currency) }}</span>
+                <div class="flex justify-between">
+                  <span class="font-medium">{{
+                    $t('cart.accountBalance')
+                  }}</span>
+                  <span class="font-medium">{{
+                    formatMoney(account.balance, currency)
+                  }}</span>
+                </div>
               </div>
 
               <BaseButton
-                class="mt-4 mb-1 block"
+                class="mt-2 mb-4 block w-full border"
                 size="lg"
                 :label="$t('cart.checkout')"
                 :is-loading="cartIsUpdating"

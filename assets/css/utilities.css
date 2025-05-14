@@ -55,11 +55,24 @@
 
 .popup-enter .panel,
 .popup-leave-to .panel {
-  @apply md:center-offset-bottom translate-y-full transform md:opacity-0;
+  @apply translate-y-full transform md:opacity-0;
+}
+
+@screen md {
+  .popup-enter .panel,
+  .popup-leave-to .panel {
+    transform: translate(-50%, calc(-50% + 5rem));
+  }
 }
 
 .popup-enter-to .panel {
-  @apply md:center-xy translate-y-0 transform md:opacity-100;
+  @apply translate-y-0 transform md:opacity-100;
+}
+
+@screen md {
+  .popup-enter-to .panel {
+    @apply left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+  }
 }
 
 .float-enter-active .overlay,
@@ -85,11 +98,24 @@
 
 .float-enter .panel,
 .float-leave-to .panel {
-  @apply md:center-offset-bottom translate-y-1/4 transform opacity-0;
+  @apply translate-y-1/4 transform opacity-0;
+}
+
+@screen md {
+  .float-enter .panel,
+  .float-leave-to .panel {
+    transform: translate(-50%, calc(-50% + 5rem));
+  }
 }
 
 .float-enter-to .panel {
-  @apply md:center-xy translate-y-0 transform opacity-100;
+  @apply translate-y-0 transform opacity-100;
+}
+
+@screen md {
+  .float-enter-to .panel {
+    @apply left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+  }
 }
 
 .slide-modal-rtl-enter-active .overlay,

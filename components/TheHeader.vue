@@ -128,6 +128,15 @@
                 class="hidden lg:block"
                 appearance="float"
               />
+              <!-- Products button -->
+              <NuxtLink
+                class="mr-1 flex h-10 items-center rounded bg-primary-light px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent-default hover:text-primary-lightest hover:shadow-md"
+                :to="localePath('/products/')"
+              >
+                <BaseIcon icon="uil:box" class="mr-1" />
+                <span>Products</span>
+              </NuxtLink>
+
               <!-- Search icon -->
               <button
                 :aria-label="$t('navigation.search')"
@@ -227,6 +236,10 @@ export default {
     // Set component data
     this.header = await $swell.settings.get('header', {});
     this.menu = await $swell.settings.menus(menuId);
+
+    // We're not modifying the menu.items array anymore
+    // The Products link is hardcoded in both desktop and mobile navigation templates
+
     this.storeName = await $swell.settings.get('store.name', 'ORIGIN');
     this.logoSrc = await $swell.settings.get('header.logo.file.url');
     this.currencyList = await $swell.currency.list();

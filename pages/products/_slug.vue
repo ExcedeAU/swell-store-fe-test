@@ -1,13 +1,13 @@
 <template>
   <main>
     <!-- Core product content -->
-    <section class="mb-12 md:flex">
+    <section class="mb-12 md:flex md:gap-8 lg:gap-12">
       <div class="relative md:w-1/2">
         <!-- Media slider for small screens -->
         <MediaSlider
           v-if="productImages"
           :media="productImages"
-          class="h-0 pb-full md:hidden"
+          class="h-0 overflow-hidden rounded pb-full shadow-md md:hidden"
         />
         <!-- Fallback image -->
         <div
@@ -20,36 +20,70 @@
             class="center-xy absolute text-primary-med"
           />
         </div>
-        <!-- Media stack for large screens -->
-        <div class="hidden h-full md:block">
-          <div v-if="$fetchState.pending" class="h-full bg-primary-lighter" />
-          <template v-else>
-            <div v-if="productImages">
-              <VisualMedia
-                v-for="(image, index) in productImages"
-                :key="image.id"
-                :source="image"
-                :alt="image.alt"
-                :lazy-load="index > 0"
-                sizes="(min-width: 768px) 50vw, 100vw"
-              />
-            </div>
 
-            <!-- Fallback image -->
-            <div v-else class="relative rounded bg-primary-lighter pb-full">
-              <BaseIcon
-                icon="uil:camera-slash"
-                size="lg"
-                class="center-xy absolute text-primary-med"
+        <!-- Enhanced gallery for large screens -->
+        <div class="hidden h-full md:flex md:gap-4">
+          <!-- Thumbnails -->
+          <div
+            class="flex max-h-120 w-20 flex-col gap-2 overflow-y-auto"
+            v-if="productImages && productImages.length > 1"
+          >
+            <div
+              v-for="(image, index) in productImages"
+              :key="`thumb-${image.id}`"
+              class="aspect-square w-full cursor-pointer overflow-hidden rounded border-2 transition-all duration-200"
+              :class="
+                selectedImageIndex === index
+                  ? 'border-primary-darkest'
+                  : 'border-transparent hover:border-primary-light'
+              "
+              @click="selectedImageIndex = index"
+            >
+              <VisualMedia
+                :source="image"
+                :alt="`${image.alt || product.name} thumbnail ${index + 1}`"
+                sizes="80px"
               />
             </div>
-          </template>
+          </div>
+
+          <!-- Main image -->
+          <div class="relative flex-1">
+            <div
+              v-if="$fetchState.pending"
+              class="h-full rounded bg-primary-lighter"
+            />
+            <template v-else>
+              <div
+                v-if="productImages"
+                class="relative overflow-hidden rounded shadow-md"
+              >
+                <transition name="fade" mode="out-in">
+                  <VisualMedia
+                    :key="`main-${selectedImageIndex}`"
+                    :source="productImages[selectedImageIndex]"
+                    :alt="productImages[selectedImageIndex].alt || product.name"
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                  />
+                </transition>
+              </div>
+
+              <!-- Fallback image -->
+              <div v-else class="relative rounded bg-primary-lighter pb-full">
+                <BaseIcon
+                  icon="uil:camera-slash"
+                  size="lg"
+                  class="center-xy absolute text-primary-med"
+                />
+              </div>
+            </template>
+          </div>
         </div>
 
         <!-- Back button -->
         <a
           href="#"
-          class="fixed left-6 bottom-6 flex h-9 w-9 items-center justify-center rounded-full bg-primary-lighter shadow-md"
+          class="fixed left-6 bottom-6 flex h-10 w-10 items-center justify-center rounded-full bg-primary-lighter shadow-md transition-colors hover:bg-primary-light"
           @click.prevent="navigateBack"
         >
           <BaseIcon icon="uil:angle-left" class="-ml-px" />
@@ -57,9 +91,9 @@
       </div>
 
       <!-- Product overview -->
-      <div class="md:w-1/2 lg:px-6 xl:px-12">
+      <div class="md:w-1/2">
         <div
-          class="container top-0 max-w-160 pt-10 transition-all duration-300 ease-in-out md:sticky md:pt-12"
+          class="container top-0 max-w-160 pt-8 transition-all duration-300 ease-in-out md:sticky md:pt-12"
           :class="headerIsVisible ? 'top-20' : 'top-0'"
         >
           <!-- Skeleton loader -->
@@ -95,35 +129,34 @@
           <!-- Main content -->
           <div v-else>
             <!--TODO<div class="mb-2 label-xs-bold text-primary-dark">{{ breadcrumb }}</div>-->
-            <h1 class="mb-4 leading-tight">
+            <h1 class="mb-4 text-3xl font-bold leading-tight">
               {{ product.name }}
             </h1>
             <!--TODO awaiting customer reviews feature
             <ReviewStars :score="reviews.averageScore" size="sm" />
             <span class="text-sm">{{ reviews.total }} reviews</span>
             -->
-            <div
-              class="mt-2 mb-5 flex items-center text-lg font-semibold md:mb-8"
-            >
+            <div class="mt-2 mb-6 flex items-center md:mb-8">
               <span
                 v-if="
                   variation.price !== null &&
                   variation.price >= 0 &&
                   variationCurrency === currency
                 "
+                class="text-2xl font-bold"
                 >{{ formatMoney(variation.price, currency, false) }}</span
               >
-              <span v-else>{{
+              <span v-else class="text-2xl font-bold">{{
                 $t('products._slug.unavailableInCurrency', {
                   currency,
                 })
               }}</span>
-              <span v-if="billingInterval" class="lowercase"
+              <span v-if="billingInterval" class="text-lg lowercase"
                 >&nbsp;{{ billingInterval }}</span
               >
               <span
                 v-if="variation.origPrice"
-                class="ml-3 -mt-2px inline-block h-6 rounded bg-error-faded px-2 text-xs uppercase leading-loose text-error-default"
+                class="ml-4 inline-block h-7 rounded bg-error-faded px-3 py-1 text-xs font-bold uppercase leading-normal text-error-default"
               >
                 {{ $t('products._slug.save') }}
                 {{
@@ -135,7 +168,11 @@
                 }}
               </span>
             </div>
-            <div class="markdown" v-html="product.description" />
+
+            <div
+              class="markdown prose mb-8 text-primary-dark"
+              v-html="product.description"
+            />
 
             <!-- Bundle items -->
             <template v-if="bundleItems">
@@ -206,17 +243,21 @@
             />
 
             <!-- Cart button & stock info -->
-            <div v-if="variation" class="relative my-8">
+            <div
+              v-if="variation"
+              class="relative my-8 rounded-lg border border-primary-lighter bg-primary-lightest p-6 shadow-sm"
+            >
               <StockStatus
                 v-if="product.stockTracking && !product.stockPurchasable"
                 :status-value="variation.stockStatus"
                 :bundle-items-available="bundleItemsAvailable"
                 :stock-level="variation.stockLevel"
                 :show-stock-level="showStockLevel"
+                class="mb-4"
               />
 
               <!-- Quantity -->
-              <div class="flex">
+              <div class="flex flex-col gap-4 sm:flex-row">
                 <ProductQuantity
                   v-if="
                     enableQuantity &&
@@ -228,6 +269,7 @@
                   :stock-tracking="variation.stockTracking"
                   :stock-purchasable="variation.stockPurchasable"
                   :stock-level="variation.stockLevel"
+                  class="sm:w-1/3"
                 />
 
                 <!-- Add to cart -->
@@ -237,7 +279,7 @@
                     disabled: !available,
                   }"
                   type="submit"
-                  class="btn btn--lg relative h-auto w-full"
+                  class="btn btn--lg relative h-auto w-full rounded-md border bg-primary-darkest text-primary-lightest transition-all duration-300 hover:bg-primary-darker"
                   :disabled="!available"
                   @click.prevent="addToCart"
                 >
@@ -311,15 +353,26 @@
             <!-- END Purchase form -->
 
             <!-- Store features -->
-            <div class="my-8">
-              <ul class>
+            <div class="my-8 rounded-lg bg-primary-lighter p-6">
+              <h3 class="mb-4 text-lg font-semibold">
+                {{ $t('products._slug.benefits') || 'Product Benefits' }}
+              </h3>
+              <ul class="grid gap-3">
                 <li
                   v-for="(benefit, index) in productBenefits"
                   :key="'storeProductBenefit' + index"
-                  class="label-sm my-2 flex"
+                  class="flex items-center"
                 >
-                  <BaseIcon :icon="benefit.icon" size="sm" class="mr-2 -mb-1" />
-                  <span>{{ benefit.text }}</span>
+                  <div
+                    class="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary-light"
+                  >
+                    <BaseIcon
+                      :icon="benefit.icon"
+                      size="sm"
+                      class="text-primary-darkest"
+                    />
+                  </div>
+                  <span class="text-sm font-medium">{{ benefit.text }}</span>
                 </li>
               </ul>
             </div>
@@ -435,6 +488,7 @@ export default {
       enableSocialSharing: false,
       showStockLevel: false,
       activeDropdownUID: null,
+      selectedImageIndex: 0,
     };
   },
 

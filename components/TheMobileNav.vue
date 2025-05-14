@@ -13,13 +13,25 @@
             tag="ul"
             appear
             class="w-full text-2xl font-semibold"
-            :style="{ '--length': menuItems.length }"
+            :style="{ '--length': menuItems.length + 1 }"
           >
+            <!-- Products link -->
+            <li
+              key="mobileNavItemProducts"
+              class="mb-6 md:text-center"
+              :style="{ '--i': 0 }"
+            >
+              <NuxtLink :to="localePath('/products/')" class="sw-nav-link">
+                <BaseIcon icon="uil:box" class="mr-1" />
+                <span>Products</span>
+              </NuxtLink>
+            </li>
+
             <li
               v-for="(item, index) in menuItems"
               :key="'mobileNavItem' + index"
               class="mb-6 md:text-center"
-              :style="{ '--i': index }"
+              :style="{ '--i': index + 1 }"
             >
               <a
                 v-if="item.type === 'url'"
@@ -43,6 +55,16 @@
         <!-- Misc. Links -->
         <div ref="miscLinks" class="container md:max-w-120">
           <div class="border-t border-primary-light py-12">
+            <!-- Products button -->
+            <NuxtLink
+              class="mb-8 block rounded bg-primary-light px-4 py-3 text-center font-medium transition-all duration-200 hover:bg-accent-default hover:text-primary-lightest hover:shadow-md"
+              :to="localePath('/products/')"
+              @click.native="$emit('click-close')"
+            >
+              <BaseIcon icon="uil:box" class="mr-1" />
+              <span>Products</span>
+            </NuxtLink>
+
             <button
               class="grid-icon-label mb-8"
               @click.prevent="$emit('click-search')"

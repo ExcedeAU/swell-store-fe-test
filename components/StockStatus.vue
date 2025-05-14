@@ -1,25 +1,33 @@
 <template>
-  <div class="mb-3 flex flex-wrap justify-between">
-    <div class="mr-2">
-      <span
-        :class="`bg-${status.color}-default`"
-        class="mr-1 inline-block h-2 w-2 rounded-full"
-      />
-      <span class="label-xs-bold text-primary-dark">{{
-        $t(status.label)
-      }}</span>
-      <span
-        v-if="showStockLevel && stockLevel > 0 && bundleItemsAvailable"
-        class="label-xs-bold text-primary-dark"
-      >
-        • {{ $t('products._slug.stockRemaining', { n: stockLevel }) }}
-      </span>
-    </div>
-    <div class>
-      <a v-if="status.link" href="#" class="label-sm-bold">{{
-        $t(status.message)
-      }}</a>
-      <span v-else class="label-sm-faded">{{ $t(status.message) }}</span>
+  <div class="mb-4 rounded-md border p-3" :class="statusBorderClass">
+    <div class="flex flex-wrap items-center justify-between">
+      <div class="flex items-center">
+        <span
+          :class="`bg-${status.color}-default`"
+          class="mr-2 inline-block h-3 w-3 rounded-full"
+        />
+        <span class="font-medium text-primary-darkest">{{
+          $t(status.label)
+        }}</span>
+        <span
+          v-if="showStockLevel && stockLevel > 0 && bundleItemsAvailable"
+          class="ml-2 text-sm text-primary-dark"
+        >
+          • {{ $t('products._slug.stockRemaining', { n: stockLevel }) }}
+        </span>
+      </div>
+      <div>
+        <a
+          v-if="status.link"
+          href="#"
+          class="text-sm font-medium text-primary-darkest underline hover:text-accent-default"
+        >
+          {{ $t(status.message) }}
+        </a>
+        <span v-else class="text-sm text-primary-dark">{{
+          $t(status.message)
+        }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -84,6 +92,16 @@ export default {
       if (!this.bundleItemsAvailable)
         return get(statuses, 'bundle_items_unavailable', {});
       return get(statuses, this.statusValue || 'out_of_stock', {});
+    },
+
+    statusBorderClass() {
+      const colorMap = {
+        ok: 'border-ok-default border-opacity-30',
+        warning: 'border-warning-default border-opacity-30',
+        error: 'border-error-default border-opacity-30',
+      };
+
+      return colorMap[this.status.color] || 'border-primary-light';
     },
   },
 };

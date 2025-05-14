@@ -1,10 +1,14 @@
 <template>
-  <div class="mr-4 flex items-center">
+  <div
+    class="flex items-center overflow-hidden rounded-md border border-primary-light shadow-sm"
+  >
     <button
       type="button"
-      class="relative mr-1 inline-block h-6 w-6 rounded-full bg-primary-darkest"
+      class="relative inline-block h-10 w-10 bg-primary-lighter transition-colors hover:bg-primary-light"
       :class="{
         'cursor-not-allowed opacity-25':
+          !stockAvailable || value === 1 || cartIsUpdating,
+        'hover:bg-primary-lighter':
           !stockAvailable || value === 1 || cartIsUpdating,
       }"
       :disabled="!stockAvailable || value === 1 || cartIsUpdating"
@@ -13,12 +17,12 @@
       <BaseIcon
         icon="uil:minus"
         size="sm"
-        class="center-xy absolute text-primary-lightest"
+        class="center-xy absolute text-primary-darkest"
       />
     </button>
 
     <input
-      class="w-8 p-1 text-center text-xl md:w-10 md:p-2 md:text-2xl"
+      class="focus:outline-none w-12 border-0 bg-primary-lightest p-1 text-center text-lg font-medium"
       type="number"
       min="1"
       :max="limit"
@@ -28,9 +32,11 @@
 
     <button
       type="button"
-      class="relative ml-1 inline-block h-6 w-6 rounded-full bg-primary-darkest"
+      class="relative inline-block h-10 w-10 bg-primary-lighter transition-colors hover:bg-primary-light"
       :class="{
         'cursor-not-allowed opacity-25':
+          !stockAvailable || value === limit || cartIsUpdating,
+        'hover:bg-primary-lighter':
           !stockAvailable || value === limit || cartIsUpdating,
       }"
       :disabled="!stockAvailable || value === limit || cartIsUpdating"
@@ -39,7 +45,7 @@
       <BaseIcon
         icon="uil:plus"
         size="sm"
-        class="center-xy absolute text-primary-lightest"
+        class="center-xy absolute text-primary-darkest"
       />
     </button>
   </div>

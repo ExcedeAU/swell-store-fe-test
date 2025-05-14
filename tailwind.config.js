@@ -1,7 +1,18 @@
 module.exports = {
   mode: 'jit',
+  darkMode: 'media', // or 'class' for manual dark mode
   purge: {
-    content: ['./tailwind-safelist.txt'],
+    content: [
+      './components/**/*.vue',
+      './layouts/**/*.vue',
+      './pages/**/*.vue',
+      './plugins/**/*.js',
+      './modules/**/*.js',
+      './modules/**/*.vue',
+      './utils/**/*.js',
+      './assets/css/**/*.css',
+      './tailwind-safelist.txt',
+    ],
   },
   theme: {
     colors: {

@@ -2,6 +2,7 @@
   <transition name="fade" appear>
     <div
       class="fixed inset-0 z-40 h-full w-full overflow-y-scroll bg-primary-lightest"
+      style="background-color: white"
     >
       <transition name="fade-up-out">
         <TheToastNotification
